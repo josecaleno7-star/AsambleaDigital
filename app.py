@@ -70,3 +70,12 @@ if st.button("Ver Resultados de la Asamblea"):
         st.pyplot(fig)
     else:
         st.write("Aún no hay votos registrados.")
+@st.cache_data
+def cargar_censo():
+    # Cargamos todo como texto para evitar problemas con números grandes
+    df = pd.read_excel("censo.xlsx", dtype={'Apoderado_ID': str, 'Unidad': str, 'Torre': str})
+    df.columns = df.columns.str.strip()
+    # Limpiamos espacios en blanco que puedan venir del Excel
+    df['Apoderado_ID'] = df['Apoderado_ID'].str.strip()
+    df['id_unidad'] = df['Torre'].astype(str) + " " + df['Unidad'].astype(str)
+    return df

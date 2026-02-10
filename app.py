@@ -72,10 +72,12 @@ if st.button("Ver Resultados de la Asamblea"):
         st.write("Aún no hay votos registrados.")
 @st.cache_data
 def cargar_censo():
-    # Cargamos todo como texto para evitar problemas con números grandes
-    df = pd.read_excel("censo.xlsx", dtype={'Apoderado_ID': str, 'Unidad': str, 'Torre': str})
+    # Forzamos que la columna Apoderado_ID sea leída como TEXTO (str)
+    df = pd.read_excel("censo.xlsx", dtype={'Apoderado_ID': str})
     df.columns = df.columns.str.strip()
-    # Limpiamos espacios en blanco que puedan venir del Excel
-    df['Apoderado_ID'] = df['Apoderado_ID'].str.strip()
+    
+    # Limpieza extrema: eliminamos decimales .0 que a veces pone Excel y espacios
+    df['Apoderado_ID'] = df['Apoderado_ID'].astype(str).str.replace(r'\.0$', '', regex=True).str.strip()
+    
     df['id_unidad'] = df['Torre'].astype(str) + " " + df['Unidad'].astype(str)
     return df
